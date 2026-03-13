@@ -1,37 +1,82 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row mb-4">
+@php
+    $pendingCount = $leaveRequests->where('status', 'pending')->count();
+    $approvedCount = $leaveRequests->where('status', 'approved')->count();
+    $rejectedCount = $leaveRequests->where('status', 'rejected')->count();
+    $statusLabels = [
+        'pending' => 'En attente',
+        'approved' => 'Validée',
+        'rejected' => 'Refusée',
+    ];
+@endphp
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4 p-lg-5">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+            <div>
+                <p class="text-uppercase text-muted fw-semibold small mb-2">Gestion des absences</p>
+                <h1 class="h3 mb-2">Tableau de bord des congés</h1>
+                <p class="text-muted mb-0">Visualisez les demandes en cours, prenez des décisions et préparez le reporting paie en un coup d'œil.</p>
+            </div>
+            <div>
+                <a href="{{ route('leave-requests.create') }}" class="btn btn-primary px-4">Nouvelle demande</a>
+            </div>
+        </div>
+        <div class="row g-3 mt-2">
+            <div class="col-sm-4">
+                <div class="rounded border bg-warning-subtle p-3 h-100">
+                    <p class="small text-muted mb-1">Demandes en attente</p>
+                    <p class="h4 mb-0">{{ $pendingCount }}</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="rounded border bg-success-subtle p-3 h-100">
+                    <p class="small text-muted mb-1">Demandes validées</p>
+                    <p class="h4 mb-0">{{ $approvedCount }}</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="rounded border bg-danger-subtle p-3 h-100">
+                    <p class="small text-muted mb-1">Demandes refusées</p>
+                    <p class="h4 mb-0">{{ $rejectedCount }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
     <div class="col-lg-8">
-        <div class="card h-100">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                 <div>
-                    <h1 class="h4 mb-0">Demandes de congés</h1>
+                    <h2 class="h5 mb-1">Demandes de congés</h2>
                     <small class="text-muted">Suivi des validations par le CA</small>
                 </div>
-                <a href="{{ route('leave-requests.create') }}" class="btn btn-primary">Nouvelle demande</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>Collaborateur</th>
+                                <th class="ps-4">Collaborateur</th>
                                 <th>Période</th>
                                 <th>Motif</th>
                                 <th>Statut</th>
-                                <th class="text-end">Actions CA</th>
+                                <th class="text-end pe-4">Actions CA</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($leaveRequests as $leaveRequest)
                                 <tr>
-                                    <td>
+                                    <td class="ps-4">
                                         <strong>{{ $leaveRequest->employee_name }}</strong><br>
                                         <span class="text-muted small">{{ $leaveRequest->employee_email }}</span>
                                     </td>
                                     <td>
-                                        {{ $leaveRequest->start_date->format('d/m/Y') }}<br>
+                                        <span class="fw-semibold">{{ $leaveRequest->start_date->format('d/m/Y') }}</span><br>
                                         <span class="text-muted small">au {{ $leaveRequest->end_date->format('d/m/Y') }}</span>
                                     </td>
                                     <td class="text-break" style="max-width: 240px;">
@@ -45,12 +90,12 @@
                                                 'rejected' => 'danger',
                                             ][$leaveRequest->status] ?? 'secondary';
                                         @endphp
-                                        <span class="badge bg-{{ $statusClass }} text-uppercase">{{ $leaveRequest->status }}</span>
+                                        <span class="badge rounded-pill text-bg-{{ $statusClass }}">{{ $statusLabels[$leaveRequest->status] ?? ucfirst($leaveRequest->status) }}</span>
                                         @if ($leaveRequest->decision_notes)
                                             <div class="small text-muted mt-1">{{ $leaveRequest->decision_notes }}</div>
                                         @endif
                                     </td>
-                                    <td class="text-end">
+                                    <td class="text-end pe-4">
                                         @if ($leaveRequest->status === 'pending')
                                             <div class="d-flex justify-content-end gap-2">
                                                 <form method="POST" action="{{ route('leave-requests.approve', $leaveRequest) }}">
@@ -73,7 +118,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">Aucune demande enregistrée pour le moment.</td>
+                                    <td colspan="5" class="text-center py-5 text-muted">Aucune demande enregistrée pour le moment.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -83,9 +128,10 @@
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header bg-white">
-                <h2 class="h5 mb-0">Rapport mensuel pour la paie</h2>
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h2 class="h5 mb-1">Rapport mensuel paie</h2>
+                <small class="text-muted">Demandes approuvées sur la période sélectionnée</small>
             </div>
             <div class="card-body">
                 <form method="GET" class="row g-2 align-items-end mb-3">
@@ -101,7 +147,7 @@
                         <label for="year" class="form-label">Année</label>
                         <input type="number" id="year" name="year" class="form-control" value="{{ $year }}" min="2020" max="2100">
                     </div>
-                    <div class="col-12 d-grid">
+                    <div class="col-12 d-grid mt-2">
                         <button class="btn btn-outline-primary" type="submit">Mettre à jour</button>
                     </div>
                 </form>
@@ -110,7 +156,7 @@
                 @else
                     <div class="list-group mb-3">
                         @foreach ($reportRequests as $request)
-                            <div class="list-group-item">
+                            <div class="list-group-item border-0 border-bottom px-0">
                                 <div class="fw-bold">{{ $request->employee_name }}</div>
                                 <div class="small text-muted">{{ $request->start_date->format('d/m') }} au {{ $request->end_date->format('d/m') }}</div>
                                 @if ($request->reason)
