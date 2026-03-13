@@ -1,13 +1,116 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row mb-4">
-    <div class="col-lg-8">
-        <div class="card h-100">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+<style>
+    .leave-dashboard .main-card,
+    .leave-dashboard .side-card {
+        border: 0;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.08);
+    }
+
+    .leave-dashboard .card-header {
+        border-bottom-color: #edf1f7;
+    }
+
+    .leave-dashboard .table thead th {
+        font-size: 0.78rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #64748b;
+        border-bottom: 0;
+        background: #f8fafc;
+    }
+
+    .leave-dashboard .table tbody td {
+        vertical-align: top;
+        border-color: #edf1f7;
+    }
+
+    .leave-dashboard .table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .leave-dashboard .status-badge {
+        letter-spacing: 0.03em;
+        font-weight: 600;
+        padding: 0.45rem 0.55rem;
+    }
+
+    .leave-dashboard .employee-cell {
+        min-width: 230px;
+    }
+
+    .leave-dashboard .period-cell {
+        min-width: 160px;
+    }
+
+    .leave-dashboard .reason-cell {
+        max-width: 280px;
+    }
+
+    .leave-dashboard .actions-cell {
+        min-width: 180px;
+    }
+
+    @media (max-width: 767.98px) {
+        .leave-dashboard .table-responsive {
+            border-radius: 0.75rem;
+            border: 1px solid #edf1f7;
+            overflow: hidden;
+        }
+
+        .leave-dashboard .table thead {
+            display: none;
+        }
+
+        .leave-dashboard .table,
+        .leave-dashboard .table tbody,
+        .leave-dashboard .table tr,
+        .leave-dashboard .table td {
+            display: block;
+            width: 100%;
+        }
+
+        .leave-dashboard .table tr {
+            padding: 0.9rem;
+            border-bottom: 1px solid #edf1f7;
+            background: #fff;
+        }
+
+        .leave-dashboard .table tr:last-child {
+            border-bottom: 0;
+        }
+
+        .leave-dashboard .table td {
+            border: 0;
+            padding: 0.5rem 0;
+        }
+
+        .leave-dashboard .table td::before {
+            content: attr(data-label);
+            display: block;
+            font-size: 0.76rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .leave-dashboard .actions-cell .d-flex {
+            justify-content: flex-start !important;
+        }
+    }
+</style>
+
+<div class="row g-4 mb-4 leave-dashboard">
+    <div class="col-xl-8">
+        <div class="card h-100 main-card">
+            <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h1 class="h4 mb-0">Demandes de congés</h1>
-                    <small class="text-muted">Suivi des validations par le CA</small>
+                    <small class="text-muted">Suivi clair des validations par le CA</small>
                 </div>
                 <a href="{{ route('leave-requests.create') }}" class="btn btn-primary">Nouvelle demande</a>
             </div>
@@ -26,33 +129,38 @@
                         <tbody>
                             @forelse ($leaveRequests as $leaveRequest)
                                 <tr>
-                                    <td>
+                                    <td class="employee-cell" data-label="Collaborateur">
                                         <strong>{{ $leaveRequest->employee_name }}</strong><br>
                                         <span class="text-muted small">{{ $leaveRequest->employee_email }}</span>
                                     </td>
-                                    <td>
+                                    <td class="period-cell" data-label="Période">
                                         {{ $leaveRequest->start_date->format('d/m/Y') }}<br>
                                         <span class="text-muted small">au {{ $leaveRequest->end_date->format('d/m/Y') }}</span>
                                     </td>
-                                    <td class="text-break" style="max-width: 240px;">
+                                    <td class="reason-cell text-break" data-label="Motif">
                                         {{ $leaveRequest->reason ?? '—' }}
                                     </td>
-                                    <td>
+                                    <td data-label="Statut">
                                         @php
                                             $statusClass = [
                                                 'pending' => 'warning',
                                                 'approved' => 'success',
                                                 'rejected' => 'danger',
                                             ][$leaveRequest->status] ?? 'secondary';
+                                            $statusLabel = [
+                                                'pending' => 'En attente',
+                                                'approved' => 'Validée',
+                                                'rejected' => 'Refusée',
+                                            ][$leaveRequest->status] ?? $leaveRequest->status;
                                         @endphp
-                                        <span class="badge bg-{{ $statusClass }} text-uppercase">{{ $leaveRequest->status }}</span>
+                                        <span class="badge status-badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
                                         @if ($leaveRequest->decision_notes)
                                             <div class="small text-muted mt-1">{{ $leaveRequest->decision_notes }}</div>
                                         @endif
                                     </td>
-                                    <td class="text-end">
+                                    <td class="actions-cell text-end" data-label="Actions CA">
                                         @if ($leaveRequest->status === 'pending')
-                                            <div class="d-flex justify-content-end gap-2">
+                                            <div class="d-flex justify-content-end flex-wrap gap-2">
                                                 <form method="POST" action="{{ route('leave-requests.approve', $leaveRequest) }}">
                                                     @csrf
                                                     @method('PATCH')
@@ -82,8 +190,8 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card">
+    <div class="col-xl-4">
+        <div class="card side-card">
             <div class="card-header bg-white">
                 <h2 class="h5 mb-0">Rapport mensuel pour la paie</h2>
             </div>
