@@ -3,39 +3,15 @@
 @section('title', 'Créer une demande de congé')
 
 @section('content')
+@push('styles')
 <style>
-    .leave-create-page {
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
     .leave-create-page .form-card {
-        border: 0;
-        border-radius: 1.25rem;
-        overflow: hidden;
-        background: #ffffff;
         box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    }
-
-    .leave-create-page .form-card .card-header {
-        background: linear-gradient(135deg, #0f4c81 0%, #2563eb 100%);
-        color: #fff;
-        border-bottom: 0;
-        padding: 1.4rem 1.5rem;
-    }
-
-    .leave-create-page .form-card .card-header h1 {
-        font-weight: 700;
-        color: #fff;
-    }
-
-    .leave-create-page .form-card .card-header small {
-        color: rgba(255, 255, 255, 0.85);
     }
 
     .leave-create-page .card-body {
         padding: 2rem;
-        background:
-            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     }
 
     .leave-create-page .section-title {
@@ -52,31 +28,9 @@
         border-bottom: 1px solid #e2e8f0;
     }
 
-    .leave-create-page .form-label {
-        font-weight: 700;
-        color: #334155;
-        margin-bottom: 0.45rem;
-    }
-
-    .leave-create-page .form-control {
-        border-radius: 0.85rem;
-        border: 1px solid #cbd5e1;
-        padding: 0.8rem 0.95rem;
-        font-size: 0.98rem;
-        color: #1e293b;
-        background: #fff;
-        transition: all 0.2s ease;
-    }
-
     .leave-create-page .form-control.form-control-lg {
         padding: 0.95rem 1rem;
         font-size: 1rem;
-    }
-
-    .leave-create-page .form-control:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
-        background: #fff;
     }
 
     .leave-create-page textarea.form-control {
@@ -96,19 +50,6 @@
         border-radius: 1rem;
         padding: 1.25rem;
         box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
-    }
-
-    .leave-create-page .btn-primary {
-        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-        border: none;
-        border-radius: 0.85rem;
-        font-weight: 700;
-        padding: 0.8rem 1.4rem;
-        box-shadow: 0 8px 18px rgba(249, 115, 22, 0.22);
-    }
-
-    .leave-create-page .btn-primary:hover {
-        background: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
     }
 
     .leave-create-page .btn-outline-secondary {
@@ -165,12 +106,13 @@
         }
     }
 </style>
+@endpush
 
 <div class="container py-4 leave-create-page">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-xl-7">
-            <div class="card form-card">
-                <div class="card-header">
+            <div class="card form-card view-card">
+                <div class="card-header view-card-header-gradient">
                     <div class="d-flex align-items-center">
                         <div class="title-icon me-3">🗓️</div>
                         <div>
@@ -188,12 +130,12 @@
                             <div class="section-title">👤 Informations salarié</div>
 
                             <div class="mb-3">
-                                <label for="employee_name" class="form-label">Nom et prénom</label>
+                                <label for="employee_name" class="form-label view-label">Nom et prénom</label>
                                 <input
                                     type="text"
                                     name="employee_name"
                                     id="employee_name"
-                                    class="form-control form-control-lg"
+                                    class="form-control form-control-lg view-input"
                                     placeholder="Ex : Jean Dupont"
                                     value="{{ old('employee_name') }}"
                                     required
@@ -202,12 +144,12 @@
                             </div>
 
                             <div class="mb-0">
-                                <label for="employee_email" class="form-label">Adresse email</label>
+                                <label for="employee_email" class="form-label view-label">Adresse email</label>
                                 <input
                                     type="email"
                                     name="employee_email"
                                     id="employee_email"
-                                    class="form-control"
+                                    class="form-control view-input"
                                     placeholder="exemple@email.fr"
                                     value="{{ old('employee_email') }}"
                                     required
@@ -221,24 +163,24 @@
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="start_date" class="form-label">Date de début</label>
+                                    <label for="start_date" class="form-label view-label">Date de début</label>
                                     <input
                                         type="date"
                                         name="start_date"
                                         id="start_date"
-                                        class="form-control"
+                                        class="form-control view-input"
                                         value="{{ old('start_date') }}"
                                         required
                                     >
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="end_date" class="form-label">Date de fin</label>
+                                    <label for="end_date" class="form-label view-label">Date de fin</label>
                                     <input
                                         type="date"
                                         name="end_date"
                                         id="end_date"
-                                        class="form-control"
+                                        class="form-control view-input"
                                         value="{{ old('end_date') }}"
                                         required
                                     >
@@ -253,11 +195,11 @@
                         <div class="form-block">
                             <div class="section-title">📝 Motif facultatif</div>
 
-                            <label for="reason" class="form-label">Précision éventuelle</label>
+                            <label for="reason" class="form-label view-label">Précision éventuelle</label>
                             <textarea
                                 name="reason"
                                 id="reason"
-                                class="form-control"
+                                class="form-control view-input"
                                 rows="4"
                                 placeholder="Ex : congés payés, événement familial, repos..."
                             >{{ old('reason') }}</textarea>
@@ -272,7 +214,7 @@
                                 Annuler
                             </a>
 
-                            <button class="btn btn-primary" type="submit">
+                            <button class="btn btn-primary btn-view-primary" type="submit">
                                 Envoyer la demande
                             </button>
                         </div>

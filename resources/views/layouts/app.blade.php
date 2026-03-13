@@ -120,6 +120,63 @@
             letter-spacing: 0.03em;
         }
 
+        .view-card {
+            border: 0;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .view-card-header-gradient {
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #0f4c81 0%, #2563eb 100%);
+            color: #fff;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .view-card-header-gradient h1,
+        .view-card-header-gradient h2,
+        .view-card-header-gradient small {
+            color: #fff;
+        }
+
+        .view-label {
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .view-input,
+        .view-select {
+            border-radius: 0.75rem;
+            border: 1px solid #cbd5e1;
+            padding: 0.7rem 0.85rem;
+            background: #fff;
+        }
+
+        .view-input:focus,
+        .view-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-view-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            border: none;
+            border-radius: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
+        }
+
+        .btn-view-primary:hover {
+            background: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+        }
+
+        .auth-card {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
         @media (max-width: 991.98px) {
             .app-navbar .navbar-nav {
                 margin-top: 0.75rem;
@@ -131,6 +188,7 @@
             }
         }
     </style>
+    @stack('styles')
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar mb-4">
