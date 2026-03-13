@@ -12,6 +12,18 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public const STATUS_ADMIN = 'admin';
+
+    public const STATUS_EMPLOYEE = 'employee';
+
+    public const STATUS_PAYROLL_MANAGER = 'payroll_manager';
+
+    public const STATUSES = [
+        self::STATUS_ADMIN,
+        self::STATUS_EMPLOYEE,
+        self::STATUS_PAYROLL_MANAGER,
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +33,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
     ];
 
     /**
@@ -44,5 +57,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function hasStatus(string ...$statuses): bool
+    {
+        return in_array($this->status, $statuses, true);
     }
 }

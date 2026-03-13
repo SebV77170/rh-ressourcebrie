@@ -109,6 +109,17 @@
             padding-bottom: 1rem;
         }
 
+        .status-pill {
+            border-radius: 999px;
+            background-color: rgba(255, 255, 255, 0.16);
+            color: #fff;
+            font-size: 0.78rem;
+            padding: 0.4rem 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
         @media (max-width: 991.98px) {
             .app-navbar .navbar-nav {
                 margin-top: 0.75rem;
@@ -124,16 +135,35 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar mb-4">
         <div class="container main-container">
-            
+            <a class="navbar-brand" href="{{ route('leave-requests.index') }}">RH RessourceBrie</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Afficher/masquer la navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                 <div class="navbar-nav align-items-lg-center gap-lg-2">
-                    <a class="nav-link {{ request()->routeIs('leave-requests.index') ? 'active' : '' }}" href="{{ route('leave-requests.index') }}">
-                        Synthèse
-                    </a>
-                    <a class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active' : '' }}" href="{{ route('leave-requests.create') }}">
-                        Nouvelle demande
-                    </a>
+                    @auth
+                        <a class="nav-link {{ request()->routeIs('leave-requests.index') ? 'active' : '' }}" href="{{ route('leave-requests.index') }}">
+                            Synthèse
+                        </a>
+
+                        @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN, \App\Models\User::STATUS_EMPLOYEE))
+                            <a class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active' : '' }}" href="{{ route('leave-requests.create') }}">
+                                Nouvelle demande
+                            </a>
+                        @endif
+
+                        <span class="status-pill">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="nav-link border-0 bg-transparent" type="submit">Déconnexion</button>
+                        </form>
+                    @else
+                        <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">Connexion</a>
+                        <a class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}" href="{{ route('register') }}">Inscription</a>
+                    @endauth
                 </div>
             </div>
         </div>

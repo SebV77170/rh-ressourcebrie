@@ -3,6 +3,9 @@
 @section('title', 'Demandes de congés')
 
 @section('content')
+@php
+    $canManageRequests = auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN);
+@endphp
 
 <style>
     .leave-dashboard {
@@ -331,7 +334,7 @@
                                     </td>
 
                                     <td class="actions-cell text-end" data-label="Actions CA">
-                                        @if ($leaveRequest->status === 'pending')
+                                        @if ($canManageRequests && $leaveRequest->status === 'pending')
                                             <div class="d-flex justify-content-end flex-wrap gap-2">
                                                 <form method="POST" action="{{ route('leave-requests.approve', $leaveRequest) }}">
                                                     @csrf
@@ -349,7 +352,11 @@
                                             </div>
                                         @else
                                             <small class="text-muted">
-                                                Décision le {{ optional($leaveRequest->decision_made_at)->format('d/m/Y H:i') ?? '—' }}
+                                                @if ($canManageRequests)
+                                                    Décision le {{ optional($leaveRequest->decision_made_at)->format('d/m/Y H:i') ?? '—' }}
+                                                @else
+                                                    Consultation uniquement
+                                                @endif
                                             </small>
                                         @endif
                                     </td>
