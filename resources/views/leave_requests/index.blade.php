@@ -7,32 +7,19 @@
     $canManageRequests = auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN);
 @endphp
 
+@push('styles')
 <style>
     .leave-dashboard {
-        font-family: Arial, Helvetica, sans-serif;
         color: #1e293b;
     }
 
     .leave-dashboard .main-card,
     .leave-dashboard .side-card {
-        border: 0;
-        border-radius: 1.25rem;
-        overflow: hidden;
-        background: #ffffff;
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    }
-
-    .leave-dashboard .main-card .card-header,
-    .leave-dashboard .side-card .card-header {
-        border-bottom: 1px solid #e2e8f0;
-        background: linear-gradient(135deg, #0f4c81 0%, #2563eb 100%);
-        color: #fff;
-        padding: 1.25rem 1.5rem;
     }
 
     .leave-dashboard .main-card .card-header h1,
     .leave-dashboard .side-card .card-header h2 {
-        color: #fff;
         font-weight: 700;
     }
 
@@ -41,16 +28,7 @@
     }
 
     .leave-dashboard .btn-primary {
-        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-        border: none;
-        border-radius: 0.8rem;
-        font-weight: 700;
         padding: 0.65rem 1rem;
-        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
-    }
-
-    .leave-dashboard .btn-primary:hover {
-        background: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
     }
 
     .leave-dashboard .btn-outline-primary {
@@ -173,25 +151,6 @@
         overflow: hidden;
     }
 
-    .leave-dashboard .form-label {
-        font-weight: 700;
-        color: #334155;
-    }
-
-    .leave-dashboard .form-control,
-    .leave-dashboard .form-select {
-        border-radius: 0.75rem;
-        border: 1px solid #cbd5e1;
-        padding: 0.7rem 0.85rem;
-        background: #fff;
-    }
-
-    .leave-dashboard .form-control:focus,
-    .leave-dashboard .form-select:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
-    }
-
     .leave-dashboard .list-group-item {
         border: 1px solid #e2e8f0;
         border-radius: 0.9rem !important;
@@ -271,11 +230,12 @@
         }
     }
 </style>
+@endpush
 
 <div class="row g-4 mb-4 leave-dashboard">
     <div class="col-xl-8">
-        <div class="card h-100 main-card">
-            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div class="card h-100 main-card view-card">
+            <div class="card-header view-card-header-gradient d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h1 class="h4 mb-1">Synthèse des demandes de congés</h1>
                     <small>Suivi clair des validations par le CA</small>
@@ -376,16 +336,16 @@
     </div>
 
     <div class="col-xl-4">
-        <div class="card side-card h-100">
-            <div class="card-header">
+        <div class="card side-card h-100 view-card">
+            <div class="card-header view-card-header-gradient">
                 <h2 class="h5 mb-0">Rapport mensuel pour la paie</h2>
             </div>
 
             <div class="card-body p-4">
                 <form method="GET" class="row g-3 align-items-end mb-4">
                     <div class="col-6">
-                        <label for="month" class="form-label">Mois</label>
-                        <select id="month" name="month" class="form-select">
+                        <label for="month" class="form-label view-label">Mois</label>
+                        <select id="month" name="month" class="form-select view-select">
                             @foreach (range(1, 12) as $m)
                                 <option value="{{ $m }}" @selected($m === $month)>
                                     {{ str_pad($m, 2, '0', STR_PAD_LEFT) }}
@@ -395,8 +355,8 @@
                     </div>
 
                     <div class="col-6">
-                        <label for="year" class="form-label">Année</label>
-                        <input type="number" id="year" name="year" class="form-control" value="{{ $year }}" min="2020" max="2100">
+                        <label for="year" class="form-label view-label">Année</label>
+                        <input type="number" id="year" name="year" class="form-control view-input" value="{{ $year }}" min="2020" max="2100">
                     </div>
 
                     <div class="col-12 d-grid">
