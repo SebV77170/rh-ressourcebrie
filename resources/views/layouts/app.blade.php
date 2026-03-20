@@ -256,5 +256,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqk8aEAC5vlaQt1zG72Xd1LSeX776BF3nf6/Dr7fP5AnbcW2CYwiVdc+GqORdzdrD" crossorigin="anonymous"></script>
+    @stack('scripts')
 </body>
 </html>

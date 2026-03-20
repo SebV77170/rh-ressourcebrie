@@ -2,6 +2,23 @@
 
 @section('title', 'Créer une demande de congé')
 
+@php
+    use App\Models\User;
+    $selectedEmployee = null;
+
+    if ($currentUser->hasStatus(User::STATUS_ADMIN)) {
+        $selectedEmployee = $employees->firstWhere('id', (int) old('selected_employee_id')) ?? $employees->first();
+    }
+
+    $nameSource = old('employee_name', $selectedEmployee?->name ?? $currentUser->name);
+    $nameParts = preg_split('/\s+/', trim((string) $nameSource), 2, PREG_SPLIT_NO_EMPTY) ?: [];
+    $firstName = old('employee_first_name', $nameParts[0] ?? '');
+    $lastName = old('employee_last_name', $nameParts[1] ?? '');
+    $email = old('employee_email', $selectedEmployee?->email ?? $currentUser->email);
+    $selectedEmployeeId = old('selected_employee_id', $selectedEmployee?->id);
+    $isAdmin = $currentUser->hasStatus(User::STATUS_ADMIN);
+@endphp
+
 @section('content')
 @push('styles')
 <style>
@@ -28,7 +45,8 @@
         border-bottom: 1px solid #e2e8f0;
     }
 
-    .leave-create-page .form-control.form-control-lg {
+    .leave-create-page .form-control.form-control-lg,
+    .leave-create-page .form-select.form-select-lg {
         padding: 0.95rem 1rem;
         font-size: 1rem;
     }
@@ -129,32 +147,83 @@
                         <div class="form-block mb-4">
                             <div class="section-title">👤 Informations salarié</div>
 
-                            <div class="mb-3">
-                                <label for="employee_name" class="form-label view-label">Nom et prénom</label>
-                                <input
-                                    type="text"
-                                    name="employee_name"
-                                    id="employee_name"
-                                    class="form-control form-control-lg view-input"
-                                    placeholder="Ex : Jean Dupont"
-                                    value="{{ old('employee_name') }}"
-                                    required
-                                >
-                                <div class="field-hint">Indiquez l’identité de la personne concernée par la demande.</div>
+                            @if ($isAdmin)
+                                <div class="mb-3">
+                                    <label for="selected_employee_id" class="form-label view-label">Employé</label>
+                                    <select
+                                        name="selected_employee_id"
+                                        id="selected_employee_id"
+                                        class="form-select form-select-lg view-select"
+                                        data-employee-selector
+                                    >
+                                        @foreach ($employees as $employee)
+                                            @php
+                                                $employeeParts = preg_split('/\s+/', trim($employee->name), 2, PREG_SPLIT_NO_EMPTY) ?: [];
+                                            @endphp
+                                            <option
+                                                value="{{ $employee->id }}"
+                                                data-first-name="{{ $employeeParts[0] ?? '' }}"
+                                                data-last-name="{{ $employeeParts[1] ?? '' }}"
+                                                data-email="{{ $employee->email }}"
+                                                data-full-name="{{ $employee->name }}"
+                                                @selected((string) $selectedEmployeeId === (string) $employee->id)
+                                            >
+                                                {{ $employee->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="field-hint">Choisissez l’employé concerné pour mettre à jour automatiquement les informations ci-dessous.</div>
+                                </div>
+                            @endif
+
+                            <input type="hidden" name="employee_name" id="employee_name" value="{{ $nameSource }}">
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="employee_first_name" class="form-label view-label">Prénom</label>
+                                    <input
+                                        type="text"
+                                        name="employee_first_name"
+                                        id="employee_first_name"
+                                        class="form-control form-control-lg view-input"
+                                        value="{{ $firstName }}"
+                                        readonly
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="employee_last_name" class="form-label view-label">Nom</label>
+                                    <input
+                                        type="text"
+                                        name="employee_last_name"
+                                        id="employee_last_name"
+                                        class="form-control form-control-lg view-input"
+                                        value="{{ $lastName }}"
+                                        readonly
+                                        required
+                                    >
+                                </div>
                             </div>
 
-                            <div class="mb-0">
+                            <div class="mb-0 mt-3">
                                 <label for="employee_email" class="form-label view-label">Adresse email</label>
                                 <input
                                     type="email"
                                     name="employee_email"
                                     id="employee_email"
                                     class="form-control view-input"
-                                    placeholder="exemple@email.fr"
-                                    value="{{ old('employee_email') }}"
+                                    value="{{ $email }}"
+                                    readonly
                                     required
                                 >
-                                <div class="field-hint">Cette adresse permettra d’identifier clairement le salarié.</div>
+                                <div class="field-hint">
+                                    @if ($isAdmin)
+                                        Les champs se remplissent automatiquement selon l’employé sélectionné.
+                                    @else
+                                        Vos informations sont déjà renseignées : il ne vous reste qu’à choisir les dates et préciser le motif si besoin.
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -224,4 +293,38 @@
         </div>
     </div>
 </div>
+
+@if ($isAdmin)
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const selector = document.querySelector('[data-employee-selector]');
+                const firstNameInput = document.getElementById('employee_first_name');
+                const lastNameInput = document.getElementById('employee_last_name');
+                const emailInput = document.getElementById('employee_email');
+                const fullNameInput = document.getElementById('employee_name');
+
+                if (! selector || ! firstNameInput || ! lastNameInput || ! emailInput || ! fullNameInput) {
+                    return;
+                }
+
+                const syncEmployeeFields = () => {
+                    const selectedOption = selector.options[selector.selectedIndex];
+
+                    if (! selectedOption) {
+                        return;
+                    }
+
+                    firstNameInput.value = selectedOption.dataset.firstName || '';
+                    lastNameInput.value = selectedOption.dataset.lastName || '';
+                    emailInput.value = selectedOption.dataset.email || '';
+                    fullNameInput.value = selectedOption.dataset.fullName || '';
+                };
+
+                selector.addEventListener('change', syncEmployeeFields);
+                syncEmployeeFields();
+            });
+        </script>
+    @endpush
+@endif
 @endsection

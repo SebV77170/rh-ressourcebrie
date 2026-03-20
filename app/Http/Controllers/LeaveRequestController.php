@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeaveRequest;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class LeaveRequestController extends Controller
@@ -33,7 +35,18 @@ class LeaveRequestController extends Controller
 
     public function create(): View
     {
-        return view('leave_requests.create');
+        /** @var User $user */
+        $user = Auth::user();
+
+        return view('leave_requests.create', [
+            'currentUser' => $user,
+            'employees' => $user->hasStatus(User::STATUS_ADMIN)
+                ? User::query()
+                    ->where('status', User::STATUS_EMPLOYEE)
+                    ->orderBy('name')
+                    ->get(['id', 'name', 'email'])
+                : collect(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
