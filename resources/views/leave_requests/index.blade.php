@@ -233,14 +233,14 @@
 @endpush
 
 <div class="row g-4 mb-4 leave-dashboard">
-    @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN))
+    @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN, \App\Models\User::STATUS_EMPLOYEE))
 
     <div class="col-xl-8">
         <div class="card h-100 main-card view-card">
             <div class="card-header view-card-header-gradient d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <h1 class="h4 mb-1">Synthèse des demandes de congés</h1>
-                    <small>Suivi clair des validations par le CA</small>
+                    <small>{{ $canManageRequests ? 'Suivi clair des validations par le CA' : 'Suivi de vos demandes de congés' }}</small>
                 </div>
             </div>
 

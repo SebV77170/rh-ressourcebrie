@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +15,20 @@ class LeaveRequestController extends Controller
 {
     public function index(Request $request): View
     {
+        /** @var User $user */
+        $user = Auth::user();
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
 
-        $leaveRequests = LeaveRequest::latest()->get();
+        $leaveRequestsQuery = LeaveRequest::query()
+            ->when(
+                $user->hasStatus(User::STATUS_EMPLOYEE),
+                fn (Builder $query): Builder => $query->where('employee_email', $user->email)
+            );
+
+        $leaveRequests = (clone $leaveRequestsQuery)
+            ->latest()
+            ->get();
 
         $reportRequests = LeaveRequest::where('status', 'approved')
             ->whereMonth('start_date', $month)
