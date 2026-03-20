@@ -19,6 +19,8 @@ class LeaveRequestController extends Controller
         $user = Auth::user();
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
+        $reportPeriodStart = Carbon::create($year, $month, 1)->startOfMonth();
+        $reportPeriodEnd = $reportPeriodStart->copy()->endOfMonth();
 
         $leaveRequestsQuery = LeaveRequest::query()
             ->when(
@@ -31,10 +33,20 @@ class LeaveRequestController extends Controller
             ->get();
 
         $reportRequests = LeaveRequest::where('status', 'approved')
-            ->whereMonth('start_date', $month)
-            ->whereYear('start_date', $year)
+            ->whereDate('start_date', '<=', $reportPeriodEnd)
+            ->whereDate('end_date', '>=', $reportPeriodStart)
             ->orderBy('start_date')
-            ->get();
+            ->get()
+            ->map(function (LeaveRequest $leaveRequest) use ($reportPeriodStart, $reportPeriodEnd): LeaveRequest {
+                $leaveRequest->report_start_date = $leaveRequest->start_date->greaterThan($reportPeriodStart)
+                    ? $leaveRequest->start_date->copy()
+                    : $reportPeriodStart->copy();
+                $leaveRequest->report_end_date = $leaveRequest->end_date->lessThan($reportPeriodEnd)
+                    ? $leaveRequest->end_date->copy()
+                    : $reportPeriodEnd->copy();
+
+                return $leaveRequest;
+            });
 
         return view('leave_requests.index', [
             'leaveRequests' => $leaveRequests,

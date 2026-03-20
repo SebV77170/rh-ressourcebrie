@@ -379,7 +379,7 @@
                             <div class="list-group-item">
                                 <div class="fw-bold text-primary">{{ $request->employee_name }}</div>
                                 <div class="small text-muted mb-1">
-                                    {{ $request->start_date->format('d/m') }} au {{ $request->end_date->format('d/m') }}
+                                    {{ $request->report_start_date->format('d/m') }} au {{ $request->report_end_date->format('d/m/Y') }}
                                 </div>
                                 @if ($request->reason)
                                     <div class="small">{{ $request->reason }}</div>
