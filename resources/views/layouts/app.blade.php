@@ -37,6 +37,7 @@
             border-radius: 0.7rem;
             padding: 0.55rem 0.9rem !important;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
 
         .app-navbar .nav-link:hover,
@@ -193,11 +194,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar mb-4">
         <div class="container main-container">
-            <a class="navbar-brand" href="{{ route('leave-requests.index') }}">RH RessourceBrie</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Afficher/masquer la navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                 <div class="navbar-nav align-items-lg-center gap-lg-2">

@@ -233,6 +233,8 @@
 @endpush
 
 <div class="row g-4 mb-4 leave-dashboard">
+    @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN))
+
     <div class="col-xl-8">
         <div class="card h-100 main-card view-card">
             <div class="card-header view-card-header-gradient d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
@@ -334,6 +336,9 @@
             </div>
         </div>
     </div>
+    @endif
+
+    @if (auth()->user()->hasStatus(\App\Models\User::STATUS_PAYROLL_MANAGER))
 
     <div class="col-xl-4">
         <div class="card side-card h-100 view-card">
@@ -390,5 +395,7 @@
             </div>
         </div>
     </div>
+
+    @endif
 </div>
 @endsection
