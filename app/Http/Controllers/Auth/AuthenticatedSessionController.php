@@ -24,23 +24,23 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'pseudo' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ]);
 
         $user = User::query()
             ->where(function ($query) use ($credentials): void {
-                $query->where('email', $credentials['email']);
+                $query->where('pseudo', $credentials['pseudo']);
 
-                if (config('database.auth_connection') !== config('database.default')) {
-                    $query->orWhere('mail', $credentials['email']);
+                if (config('database.auth_connection') === config('database.default')) {
+                    $query->orWhere('email', $credentials['pseudo']);
                 }
             })
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->getAuthPassword())) {
             throw ValidationException::withMessages([
-                'email' => 'Les informations fournies sont invalides.',
+                'pseudo' => 'Les informations fournies sont invalides.',
             ]);
         }
 

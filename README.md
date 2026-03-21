@@ -81,7 +81,7 @@ CREATE TABLE payroll_manager (
 
 
 ## Règles d'authentification
-- La connexion lit les utilisateurs dans `objets.users` via la colonne `mail` (et conserve un repli sur `email` pour l'environnement de test local).
+- La connexion lit les utilisateurs dans `objets.users` via la colonne `pseudo` (et conserve un repli sur `email` uniquement pour l'environnement local historique quand la base d'authentification dédiée n'est pas utilisée).
 - Le rôle `admin` est attribué quand `objets.users.admin = 2`.
 - Le rôle `payroll_manager` est attribué quand l'utilisateur existe dans `rh.payroll_manager`.
 - Le rôle `employee` est attribué quand l'utilisateur existe dans `objets.employes` via `uuid_user`.

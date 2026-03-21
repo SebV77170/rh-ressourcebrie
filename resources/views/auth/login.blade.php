@@ -19,8 +19,8 @@
                     <form method="POST" action="{{ route('login.store') }}" class="row g-3">
                         @csrf
                         <div class="col-12">
-                            <label for="email" class="form-label fw-semibold">E-mail</label>
-                            <input type="email" class="form-control form-control-lg" id="email" name="email" value="{{ old('email') }}" required autofocus>
+                            <label for="pseudo" class="form-label fw-semibold">Pseudo</label>
+                            <input type="text" class="form-control form-control-lg" id="pseudo" name="pseudo" value="{{ old('pseudo') }}" required autofocus>
                         </div>
 
                         <div class="col-12">
