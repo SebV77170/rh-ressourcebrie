@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\PayrollManagerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,16 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/conges/{leaveRequest}/rejeter', [LeaveRequestController::class, 'reject'])
         ->middleware('status:'.User::STATUS_ADMIN)
         ->name('leave-requests.reject');
+
+    Route::get('/gestionnaires-paie', [PayrollManagerController::class, 'index'])
+        ->middleware('status:'.User::STATUS_ADMIN)
+        ->name('payroll-managers.index');
+
+    Route::post('/gestionnaires-paie', [PayrollManagerController::class, 'store'])
+        ->middleware('status:'.User::STATUS_ADMIN)
+        ->name('payroll-managers.store');
+
+    Route::delete('/gestionnaires-paie/{payrollManager}', [PayrollManagerController::class, 'destroy'])
+        ->middleware('status:'.User::STATUS_ADMIN)
+        ->name('payroll-managers.destroy');
 });

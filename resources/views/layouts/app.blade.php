@@ -30,6 +30,10 @@
                             <a class="nav-link px-3 {{ request()->routeIs('leave-requests.create') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('leave-requests.create') }}">Nouvelle demande</a>
                         @endif
 
+                        @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN))
+                            <a class="nav-link px-3 {{ request()->routeIs('payroll-managers.*') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('payroll-managers.index') }}">Gestionnaires de paie</a>
+                        @endif
+
                         <span class="badge rounded-pill text-bg-success-subtle text-success-emphasis border border-success-subtle text-uppercase px-3 py-2">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
 
                         <form method="POST" action="{{ route('logout') }}">
