@@ -63,7 +63,7 @@ class PayrollManagerController extends Controller
         }
 
         PayrollManager::create([
-            'uuid_user' => (string) $user->getAuthIdentifier(),
+            'uuid_user' => $this->resolveUserUuid($user),
         ]);
 
         return redirect()
@@ -84,13 +84,21 @@ class PayrollManagerController extends Controller
     {
         return User::query()
             ->get()
-            ->filter(fn (User $user): bool => filled($user->getAuthIdentifier()))
-            ->map(fn (User $user): object => (object) [
-                'uuid_user' => (string) $user->getAuthIdentifier(),
-                'name' => $user->name !== '' ? $user->name : 'Utilisateur sans nom',
-                'email' => $user->email,
-                'status' => $user->status,
-            ])
+            ->map(function (User $user): ?object {
+                $uuid = $this->resolveUserUuid($user);
+
+                if ($uuid === null || $uuid === '') {
+                    return null;
+                }
+
+                return (object) [
+                    'uuid_user' => $uuid,
+                    'name' => $user->name !== '' ? $user->name : 'Utilisateur sans nom',
+                    'email' => $user->email,
+                    'status' => $user->status,
+                ];
+            })
+            ->filter()
             ->sortBy([
                 fn (object $user): string => mb_strtolower($user->name),
                 fn (object $user): string => mb_strtolower((string) $user->email),
@@ -102,6 +110,21 @@ class PayrollManagerController extends Controller
     {
         return User::query()
             ->get()
-            ->first(fn (User $user): bool => (string) $user->getAuthIdentifier() === $uuid);
+            ->first(fn (User $user): bool => $this->resolveUserUuid($user) === $uuid);
+    }
+
+    protected function resolveUserUuid(User $user): ?string
+    {
+        $uuid = $user->getAttribute('uuid_user')
+            ?? $user->getRawOriginal('uuid_user')
+            ?? $user->getOriginal('uuid_user');
+
+        if (filled($uuid)) {
+            return (string) $uuid;
+        }
+
+        $identifier = $user->getAuthIdentifier();
+
+        return filled($identifier) ? (string) $identifier : null;
     }
 }
