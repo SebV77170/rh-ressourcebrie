@@ -44,6 +44,7 @@ class AuthenticatedSessionController extends Controller
                 'login_column' => $loginColumn,
                 'matching_users_count' => $matchingUsers->count(),
                 'pseudo' => $credentials['pseudo'],
+                'resolved_auth_connection' => $userModel->getConnectionName(),
             ]
         );
 
@@ -70,6 +71,7 @@ class AuthenticatedSessionController extends Controller
                 [
                     'login_column' => $loginColumn,
                     'pseudo' => $credentials['pseudo'],
+                    'resolved_auth_connection' => $userModel->getConnectionName(),
                 ]
             );
 
@@ -84,6 +86,7 @@ class AuthenticatedSessionController extends Controller
             [
                 'login_column' => $loginColumn,
                 'pseudo' => $credentials['pseudo'],
+                'resolved_auth_connection' => $user->getConnectionName(),
             ]
         );
 

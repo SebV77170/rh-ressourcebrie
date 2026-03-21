@@ -42,7 +42,19 @@ class User extends Authenticatable
 
     public function getConnectionName(): ?string
     {
-        return config('database.auth_connection', parent::getConnectionName());
+        $configuredConnection = config('database.auth_connection', parent::getConnectionName());
+        $defaultConnection = config('database.default');
+        $sharedAuthDatabase = config('database.connections.mysql_auth.database');
+        $defaultDatabase = config("database.connections.{$defaultConnection}.database");
+
+        if ($configuredConnection === $defaultConnection
+            && $defaultConnection === 'mysql'
+            && $sharedAuthDatabase
+            && $sharedAuthDatabase !== $defaultDatabase) {
+            return 'mysql_auth';
+        }
+
+        return $configuredConnection;
     }
 
     public function getKeyName(): string
