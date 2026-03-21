@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Ressource\'Brie RH')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GtvpGm0uCOwVtIAr72Xd1LSeX776BF3nf6/Dr7fP5AnbcW2CYwiVdc+GqORdzdrD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body class="bg-body-tertiary">
-    <nav class="navbar navbar-expand-lg bg-info-subtle border-bottom sticky-top">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top">
         <div class="container py-2">
-            <a class="navbar-brand d-flex align-items-center gap-3 fw-bold text-info-emphasis" href="{{ route('leave-requests.index') }}">
-                <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="56" height="56" class="rounded-circle border border-2 border-white shadow-sm">
-                <span>
-                    Ressource'Brie RH
-                    <span class="d-block fs-6 fw-normal text-success-emphasis">Gestion simple des congés</span>
+            <a class="navbar-brand d-flex align-items-center gap-3 text-decoration-none" href="{{ auth()->check() ? route('leave-requests.index') : route('login') }}">
+                <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="58" height="58" class="rounded-circle shadow-sm">
+                <span class="d-flex flex-column lh-sm">
+                    <span class="fw-bold fs-4 text-info-emphasis">Ressource'Brie RH</span>
+                    <span class="small text-success-emphasis">Gestion simple des congés</span>
                 </span>
             </a>
 
@@ -24,20 +24,20 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <div class="navbar-nav ms-auto align-items-lg-center gap-2">
                     @auth
-                        <a class="nav-link {{ request()->routeIs('leave-requests.index') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('leave-requests.index') }}">Tableau de bord</a>
+                        <a class="nav-link px-3 {{ request()->routeIs('leave-requests.index') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('leave-requests.index') }}">Tableau de bord</a>
 
                         @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN, \App\Models\User::STATUS_EMPLOYEE))
-                            <a class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('leave-requests.create') }}">Nouvelle demande</a>
+                            <a class="nav-link px-3 {{ request()->routeIs('leave-requests.create') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('leave-requests.create') }}">Nouvelle demande</a>
                         @endif
 
-                        <span class="badge rounded-pill text-bg-success text-uppercase">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
+                        <span class="badge rounded-pill text-bg-success-subtle text-success-emphasis border border-success-subtle text-uppercase px-3 py-2">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="btn btn-outline-info" type="submit">Déconnexion</button>
+                            <button class="btn btn-outline-secondary" type="submit">Déconnexion</button>
                         </form>
                     @else
-                        <a class="nav-link {{ request()->routeIs('login') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('login') }}">Connexion</a>
+                        <a class="nav-link px-3 {{ request()->routeIs('login') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('login') }}">Connexion</a>
                         <a class="btn btn-success" href="{{ route('register') }}">Inscription</a>
                     @endauth
                 </div>
@@ -45,20 +45,27 @@
         </div>
     </nav>
 
-    <main class="py-4">
+    <main class="py-5">
         <div class="container">
             <div class="row justify-content-center mb-4">
                 <div class="col-12 col-xl-10">
-                    <div class="card border-0 shadow-sm bg-white">
-                        <div class="card-body p-4 p-lg-5">
+                    <div class="card border-0 shadow-sm overflow-hidden">
+                        <div class="card-body p-4 p-lg-5 bg-white">
                             <div class="row align-items-center g-4">
-                                <div class="col-md-auto text-center">
-                                    <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="120" height="120" class="img-fluid rounded-circle shadow-sm">
+                                <div class="col-lg-7 order-2 order-lg-1">
+                                    <span class="badge rounded-pill text-bg-info mb-3 px-3 py-2">Interface 100% Bootstrap</span>
+                                    <h1 class="display-5 fw-bold text-dark mb-3">@yield('page_title', 'Une gestion des congés moderne et ergonomique')</h1>
+                                    <p class="fs-5 text-secondary mb-4">@yield('page_intro', "Une interface claire, moderne et fluide, pensée pour les équipes de la Ressource'Brie.")</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge text-bg-light border text-info-emphasis px-3 py-2">Palette bleu & vert</span>
+                                        <span class="badge text-bg-light border text-success-emphasis px-3 py-2">Navigation simplifiée</span>
+                                        <span class="badge text-bg-light border text-secondary px-3 py-2">Composants natifs Bootstrap</span>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <span class="badge text-bg-info mb-3">Interface Bootstrap</span>
-                                    <h1 class="display-6 fw-bold text-info-emphasis mb-2">@yield('page_title', 'Une gestion des congés moderne et ergonomique')</h1>
-                                    <p class="lead text-secondary mb-0">@yield('page_intro', "Une interface claire, rapide à prendre en main et pensée pour les équipes de la Ressource'Brie.")</p>
+                                <div class="col-lg-5 text-center order-1 order-lg-2">
+                                    <div class="bg-info-subtle rounded-5 p-4 d-inline-block shadow-sm border border-info-subtle">
+                                        <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="190" height="190" class="img-fluid rounded-circle bg-white p-2 shadow-sm">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +96,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     @stack('scripts')
 </body>
 </html>
