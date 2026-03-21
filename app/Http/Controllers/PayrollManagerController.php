@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\PayrollManager;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -63,7 +64,7 @@ class PayrollManagerController extends Controller
         }
 
         PayrollManager::create([
-            'uuid_user' => $this->resolveUserUuid($user),
+            'uuid_user' => $user->uuid_user,
         ]);
 
         return redirect()
@@ -82,20 +83,27 @@ class PayrollManagerController extends Controller
 
     protected function authUsers(): Collection
     {
-        return User::query()
-            ->get()
-            ->map(function (User $user): ?object {
-                $uuid = $this->resolveUserUuid($user);
+        $connection = config('database.auth_connection');
+        $query = DB::connection($connection)->table('users');
 
-                if ($uuid === null || $uuid === '') {
+        if (! Schema::connection($connection)->hasColumn('users', 'uuid_user')) {
+            return collect();
+        }
+
+        return $query
+            ->select($this->authUserSelectColumns())
+            ->get()
+            ->map(function (object $user): ?object {
+                $uuid = isset($user->uuid_user) ? trim((string) $user->uuid_user) : '';
+
+                if ($uuid === '') {
                     return null;
                 }
 
                 return (object) [
                     'uuid_user' => $uuid,
-                    'name' => $user->name !== '' ? $user->name : 'Utilisateur sans nom',
-                    'email' => $user->email,
-                    'status' => $user->status,
+                    'name' => $this->formatAuthUserName($user),
+                    'email' => $this->extractAuthUserEmail($user),
                 ];
             })
             ->filter()
@@ -106,25 +114,52 @@ class PayrollManagerController extends Controller
             ->values();
     }
 
-    protected function findUserByUuid(string $uuid): ?User
+    protected function findUserByUuid(string $uuid): ?object
     {
-        return User::query()
-            ->get()
-            ->first(fn (User $user): bool => $this->resolveUserUuid($user) === $uuid);
+        return $this->authUsers()
+            ->first(fn (object $user): bool => $user->uuid_user === $uuid);
     }
 
-    protected function resolveUserUuid(User $user): ?string
+    protected function authUserSelectColumns(): array
     {
-        $uuid = $user->getAttribute('uuid_user')
-            ?? $user->getRawOriginal('uuid_user')
-            ?? $user->getOriginal('uuid_user');
+        $connection = config('database.auth_connection');
+        $columns = ['uuid_user'];
 
-        if (filled($uuid)) {
-            return (string) $uuid;
+        foreach (['name', 'prenom', 'nom', 'email', 'mail'] as $column) {
+            if (Schema::connection($connection)->hasColumn('users', $column)) {
+                $columns[] = $column;
+            }
         }
 
-        $identifier = $user->getAuthIdentifier();
+        return array_values(array_unique($columns));
+    }
 
-        return filled($identifier) ? (string) $identifier : null;
+    protected function formatAuthUserName(object $user): string
+    {
+        $fullName = trim((string) ($user->name ?? ''));
+
+        if ($fullName !== '') {
+            return $fullName;
+        }
+
+        $legacyName = trim(implode(' ', array_filter([
+            $user->prenom ?? null,
+            $user->nom ?? null,
+        ])));
+
+        return $legacyName !== '' ? $legacyName : 'Utilisateur sans nom';
+    }
+
+    protected function extractAuthUserEmail(object $user): ?string
+    {
+        $email = trim((string) ($user->email ?? ''));
+
+        if ($email !== '') {
+            return $email;
+        }
+
+        $legacyEmail = trim((string) ($user->mail ?? ''));
+
+        return $legacyEmail !== '' ? $legacyEmail : null;
     }
 }
