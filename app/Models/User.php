@@ -55,6 +55,11 @@ class User extends Authenticatable
         return ! $this->hasLegacyAuthSchema();
     }
 
+    public function loginIdentifierColumn(): string
+    {
+        return $this->hasLegacyAuthPseudoColumn() ? 'pseudo' : 'email';
+    }
+
     protected function casts(): array
     {
         return [
@@ -139,6 +144,12 @@ class User extends Authenticatable
     {
         return $this->hasTable(config('database.connections.'.$this->getConnectionName().'.database'), 'users', $this->getConnectionName())
             && Schema::connection($this->getConnectionName())->hasColumn('users', 'uuid_user');
+    }
+
+    protected function hasLegacyAuthPseudoColumn(): bool
+    {
+        return $this->hasLegacyAuthSchema()
+            && Schema::connection($this->getConnectionName())->hasColumn('users', 'pseudo');
     }
 
     protected function hasTable(?string $database, string $table, ?string $connection = null): bool

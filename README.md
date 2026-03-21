@@ -24,7 +24,7 @@ Cette application Laravel fournit un espace RH simple pour déposer des demandes
    DB_USERNAME=nom_utilisateur
    DB_PASSWORD=mot_de_passe
 
-   DB_AUTH_CONNECTION=mysql_auth
+   DB_AUTH_CONNECTION=mysql_auth   # à conserver pour pointer vers la base mutualisée objets
    DB_AUTH_HOST=sql-0X.alwaysdata.net
    DB_AUTH_PORT=3306
    DB_AUTH_DATABASE=objets
@@ -81,7 +81,7 @@ CREATE TABLE payroll_manager (
 
 
 ## Règles d'authentification
-- La connexion lit les utilisateurs dans `objets.users` via la colonne `pseudo` (et conserve un repli sur `email` uniquement pour l'environnement local historique quand la base d'authentification dédiée n'est pas utilisée).
+- La connexion lit les utilisateurs dans `objets.users` via la colonne `pseudo`; si la base d’authentification dédiée n’est pas configurée, l’application retombe automatiquement sur la colonne `email` de la table locale `users`.
 - Le rôle `admin` est attribué quand `objets.users.admin = 2`.
 - Le rôle `payroll_manager` est attribué quand l'utilisateur existe dans `rh.payroll_manager`.
 - Le rôle `employee` est attribué quand l'utilisateur existe dans `objets.employes` via `uuid_user`.

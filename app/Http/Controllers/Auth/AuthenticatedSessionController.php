@@ -28,14 +28,9 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::query()
-            ->where(function ($query) use ($credentials): void {
-                $query->where('pseudo', $credentials['pseudo']);
-
-                if (config('database.auth_connection') === config('database.default')) {
-                    $query->orWhere('email', $credentials['pseudo']);
-                }
-            })
+        $userModel = new User();
+        $user = $userModel->newQuery()
+            ->where($userModel->loginIdentifierColumn(), $credentials['pseudo'])
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->getAuthPassword())) {

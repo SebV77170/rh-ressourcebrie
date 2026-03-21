@@ -18,7 +18,7 @@ return [
 
     'default' => env('DB_CONNECTION', 'sqlite'),
 
-    'auth_connection' => env('DB_AUTH_CONNECTION', env('DB_CONNECTION', 'sqlite')),
+    'auth_connection' => env('DB_AUTH_CONNECTION', env('DB_CONNECTION', 'sqlite') === 'mysql' ? 'mysql_auth' : env('DB_CONNECTION', 'sqlite')),
 
     /*
     |--------------------------------------------------------------------------
