@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -19,24 +18,25 @@ class PayrollManagerController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
+        $authUsers = $this->authUsers();
+        $usersByUuid = $authUsers->keyBy('uuid_user');
         $managedUserIds = $payrollManagers
             ->pluck('uuid_user')
             ->filter()
             ->map(fn (mixed $uuid): string => (string) $uuid)
             ->values();
 
-        $users = $this->availableUsers($managedUserIds);
-        $usersByUuid = $this->usersByUuid($managedUserIds);
-
         return view('payroll_managers.index', [
-            'users' => $users,
+            'users' => $authUsers
+                ->reject(fn (object $user): bool => $managedUserIds->contains($user->uuid_user))
+                ->values(),
             'payrollManagers' => $payrollManagers->map(function (PayrollManager $manager) use ($usersByUuid): object {
                 $user = $usersByUuid->get((string) $manager->uuid_user);
 
                 return (object) [
                     'id' => $manager->id,
                     'uuid_user' => $manager->uuid_user,
-                    'name' => $user?->name ?? 'Utilisateur introuvable',
+                    'name' => $user?->name ?? 'Utilisateur supprimé ou introuvable',
                     'email' => $user?->email,
                     'created_at' => $manager->created_at,
                 ];
@@ -63,7 +63,7 @@ class PayrollManagerController extends Controller
         }
 
         PayrollManager::create([
-            'uuid_user' => $validated['uuid_user'],
+            'uuid_user' => (string) $user->getAuthIdentifier(),
         ]);
 
         return redirect()
@@ -80,18 +80,10 @@ class PayrollManagerController extends Controller
             ->with('success', 'Le gestionnaire de paie a bien été révoqué.');
     }
 
-    protected function availableUsers(Collection $excludedUuids): Collection
+    protected function authUsers(): Collection
     {
-        $query = User::query();
-        $keyColumn = $this->userKeyColumn();
-
-        if ($excludedUuids->isNotEmpty()) {
-            $query->whereNotIn($keyColumn, $excludedUuids->all());
-        }
-
-        $users = $query->get();
-
-        return $users
+        return User::query()
+            ->get()
             ->filter(fn (User $user): bool => filled($user->getAuthIdentifier()))
             ->map(fn (User $user): object => (object) [
                 'uuid_user' => (string) $user->getAuthIdentifier(),
@@ -106,37 +98,10 @@ class PayrollManagerController extends Controller
             ->values();
     }
 
-    protected function usersByUuid(Collection $uuids): Collection
-    {
-        if ($uuids->isEmpty()) {
-            return collect();
-        }
-
-        $query = User::query();
-        $keyColumn = $this->userKeyColumn();
-
-        return $query->whereIn($keyColumn, $uuids->all())
-            ->get()
-            ->keyBy(fn (User $user): string => (string) $user->getAuthIdentifier());
-    }
-
     protected function findUserByUuid(string $uuid): ?User
     {
-        $keyColumn = $this->userKeyColumn();
-
         return User::query()
-            ->where($keyColumn, $uuid)
-            ->first();
-    }
-
-    protected function userKeyColumn(): string
-    {
-        $user = new User();
-
-        if (Schema::connection($user->getConnectionName())->hasColumn($user->getTable(), 'uuid_user')) {
-            return 'uuid_user';
-        }
-
-        return $user->getKeyName();
+            ->get()
+            ->first(fn (User $user): bool => (string) $user->getAuthIdentifier() === $uuid);
     }
 }
