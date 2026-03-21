@@ -2,7 +2,7 @@
 
 @section('title', 'Créer une demande de congé')
 @section('page_title', 'Nouvelle demande de congé')
-@section('page_intro', "Saisissez une demande dans un formulaire clair, structuré et entièrement construit avec les composants Bootstrap.")
+@section('page_intro', "Saisissez une demande dans le formulaire suivant. Elle sera transmise à votre CA pour validation, puis visible dans votre tableau de bord.")
 
 @php
     use App\Models\User;

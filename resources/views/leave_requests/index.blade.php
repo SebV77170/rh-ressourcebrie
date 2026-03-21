@@ -2,7 +2,7 @@
 
 @section('title', 'Demandes de congés')
 @section('page_title', 'Tableau de bord des demandes de congés')
-@section('page_intro', "Visualisez les demandes, leurs statuts et les actions disponibles dans une présentation Bootstrap moderne et ergonomique.")
+@section('page_intro', "Visualisez les demandes, leurs statuts et les actions disponibles.")
 
 @section('content')
 @php
@@ -114,7 +114,6 @@
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-success text-white py-3">
                     <h2 class="h5 mb-1">Rapport mensuel pour la paie</h2>
-                    <p class="mb-0 opacity-75">Vue réservée à la gestionnaire de paie.</p>
                 </div>
                 <div class="card-body">
                     <form method="GET" class="row g-3 align-items-end mb-4">
@@ -172,8 +171,7 @@
         <div class="col-12 col-xl-4">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-success text-white py-3">
-                    <h2 class="h5 mb-1">Repères rapides</h2>
-                    <p class="mb-0 opacity-75">Les informations utiles pour agir vite.</p>
+                    <h2 class="h5 mb-1">Récapitulatif</h2>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
@@ -207,8 +205,6 @@
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    <h2 class="h5 text-info-emphasis">Parcours fluide</h2>
-                    <p class="text-secondary">Cette présentation conserve les couleurs du logo avec des accents bleus et verts pour renforcer l’identité de la Ressource'Brie.</p>
 
                     @if ($canCreateRequest)
                         <a href="{{ route('leave-requests.create') }}" class="btn btn-success w-100">Créer une demande</a>

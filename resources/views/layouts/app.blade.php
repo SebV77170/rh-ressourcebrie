@@ -10,7 +10,7 @@
     <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top">
         <div class="container py-2">
             <a class="navbar-brand d-flex align-items-center gap-3 text-decoration-none" href="{{ auth()->check() ? route('leave-requests.index') : route('login') }}">
-                <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="58" height="58" class="rounded-circle shadow-sm">
+                <img src="{{ asset('logo-ressource-brie.png') }}" alt="Logo Ressource'Brie" width="58" height="58" class="rounded-circle shadow-sm">
                 <span class="d-flex flex-column lh-sm">
                     <span class="fw-bold fs-4 text-info-emphasis">Ressource'Brie RH</span>
                     <span class="small text-success-emphasis">Gestion simple des congés</span>
@@ -53,18 +53,15 @@
                         <div class="card-body p-4 p-lg-5 bg-white">
                             <div class="row align-items-center g-4">
                                 <div class="col-lg-7 order-2 order-lg-1">
-                                    <span class="badge rounded-pill text-bg-info mb-3 px-3 py-2">Interface 100% Bootstrap</span>
                                     <h1 class="display-5 fw-bold text-dark mb-3">@yield('page_title', 'Une gestion des congés moderne et ergonomique')</h1>
                                     <p class="fs-5 text-secondary mb-4">@yield('page_intro', "Une interface claire, moderne et fluide, pensée pour les équipes de la Ressource'Brie.")</p>
                                     <div class="d-flex flex-wrap gap-2">
-                                        <span class="badge text-bg-light border text-info-emphasis px-3 py-2">Palette bleu & vert</span>
-                                        <span class="badge text-bg-light border text-success-emphasis px-3 py-2">Navigation simplifiée</span>
-                                        <span class="badge text-bg-light border text-secondary px-3 py-2">Composants natifs Bootstrap</span>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-lg-5 text-center order-1 order-lg-2">
                                     <div class="bg-info-subtle rounded-5 p-4 d-inline-block shadow-sm border border-info-subtle">
-                                        <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="190" height="190" class="img-fluid rounded-circle bg-white p-2 shadow-sm">
+                                        <img src="{{ asset('logo-ressource-brie.png') }}" alt="Logo Ressource'Brie" width="190" height="190" class="img-fluid rounded-circle bg-white p-2 shadow-sm">
                                     </div>
                                 </div>
                             </div>

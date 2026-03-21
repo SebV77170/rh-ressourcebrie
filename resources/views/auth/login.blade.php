@@ -14,7 +14,6 @@
                             <h2 class="h3 mb-1 text-info-emphasis">Connexion</h2>
                             <p class="text-secondary mb-0">Retrouvez vos demandes, validations et suivis en un coup d’œil.</p>
                         </div>
-                        <span class="badge text-bg-success">Simple & rapide</span>
                     </div>
 
                     <form method="POST" action="{{ route('login.store') }}" class="row g-3">
