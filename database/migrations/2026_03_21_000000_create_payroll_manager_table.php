@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payroll_manager', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid_user')->unique();
+            $table->string('uuid_user', 255);
             $table->timestamps();
         });
     }
