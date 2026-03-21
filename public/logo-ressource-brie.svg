@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-labelledby="title desc">
+  <title id="title">Logo Ressource'Brie</title>
+  <desc id="desc">Logo rond bleu et vert avec une colombe blanche et un sac illustrant la Ressource'Brie.</desc>
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="110" cy="110" r="100" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#circleClip)">
+    <path d="M0 0h220v220H0z" fill="#1da1d2"/>
+    <path d="M220 88c-38 2-70 13-100 34-28 20-54 48-120 98h220V88z" fill="#1db954"/>
+  </g>
+  <circle cx="110" cy="110" r="100" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <path d="M72 77c13 4 26 11 39 22 10 9 20 13 31 14-6 8-14 14-23 18-12 4-24 4-35-1-10-4-18-11-25-21 10 2 20 2 30-1-10-4-20-13-29-27 5-1 9-2 12-4z" fill="#ffffff"/>
+  <path d="M71 63c23 4 43 14 57 30" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M52 70c10 4 18 10 24 18" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M152 114c8 2 16 8 22 17 9 14 10 30 4 43-8 17-30 24-47 15-16-8-24-28-18-45 6-17 22-31 39-30z" fill="#53c5ea" stroke="#ffffff" stroke-width="4"/>
+  <path d="M140 132h26c4 0 7 3 7 7v15c0 4-3 7-7 7h-26c-4 0-7-3-7-7v-15c0-4 3-7 7-7z" fill="#ffffff"/>
+  <rect x="138" y="136" width="30" height="18" rx="3" fill="#d5f3df" stroke="#1da1d2" stroke-width="2"/>
+  <rect x="147" y="140" width="12" height="4" rx="2" fill="#1da1d2"/>
+  <rect x="150" y="145" width="6" height="4" rx="1.5" fill="#1db954"/>
+  <path d="M24 83c7 18 12 38 13 58 2 21 0 39-7 55" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <text x="34" y="90" transform="rotate(80 34 90)" fill="#ffffff" font-size="26" font-family="Arial, Helvetica, sans-serif" font-weight="700">Ressource'</text>
+  <text x="69" y="196" fill="#ffffff" font-size="26" font-family="Arial, Helvetica, sans-serif" font-weight="700">Brie</text>
+</svg>

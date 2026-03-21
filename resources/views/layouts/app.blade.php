@@ -3,259 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Ressources Humaines')</title>
+    <title>@yield('title', 'Ressource\'Brie RH')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GtvpGm0uCOwVtIAr72Xd1LSeX776BF3nf6/Dr7fP5AnbcW2CYwiVdc+GqORdzdrD" crossorigin="anonymous">
-
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
-                radial-gradient(circle at top right, rgba(249, 115, 22, 0.08), transparent 30%),
-                linear-gradient(180deg, #f8fafc 0%, #eef4fb 100%);
-            color: #1e293b;
-            min-height: 100vh;
-        }
-
-        .app-navbar {
-            background: linear-gradient(135deg, #0f4c81 0%, #2563eb 100%);
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-            padding-top: 0.9rem;
-            padding-bottom: 0.9rem;
-        }
-
-        .app-navbar .navbar-brand {
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: 0.02em;
-            color: #fff !important;
-        }
-
-        .app-navbar .nav-link {
-            color: rgba(255, 255, 255, 0.88) !important;
-            font-weight: 600;
-            border-radius: 0.7rem;
-            padding: 0.55rem 0.9rem !important;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        .app-navbar .nav-link:hover,
-        .app-navbar .nav-link.active {
-            color: #fff !important;
-            background: rgba(255, 255, 255, 0.14);
-        }
-
-        .page-shell {
-            padding-bottom: 2.5rem;
-        }
-
-        .page-header-card {
-            background: rgba(255, 255, 255, 0.78);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-radius: 1.25rem;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-            padding: 1.25rem 1.4rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .page-header-card h1 {
-            margin: 0;
-            font-size: 1.45rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .page-header-card p {
-            margin: 0.35rem 0 0;
-            color: #64748b;
-            font-size: 0.95rem;
-        }
-
-        .content-wrapper {
-            background: transparent;
-        }
-
-        .alert {
-            border: 0;
-            border-radius: 1rem;
-            padding: 1rem 1.1rem;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
-        }
-
-        .alert-success {
-            background: linear-gradient(135deg, #dcfce7 0%, #ecfdf5 100%);
-            color: #166534;
-        }
-
-        .alert-danger {
-            background: linear-gradient(135deg, #fee2e2 0%, #fff1f2 100%);
-            color: #991b1b;
-        }
-
-        .alert ul {
-            padding-left: 1.1rem;
-        }
-
-        .main-container {
-            max-width: 1200px;
-        }
-
-        .footer-note {
-            text-align: center;
-            color: #64748b;
-            font-size: 0.85rem;
-            margin-top: 2rem;
-            padding-bottom: 1rem;
-        }
-
-        .status-pill {
-            border-radius: 999px;
-            background-color: rgba(255, 255, 255, 0.16);
-            color: #fff;
-            font-size: 0.78rem;
-            padding: 0.4rem 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-
-        .view-card {
-            border: 0;
-            border-radius: 1.25rem;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .view-card-header-gradient {
-            border-bottom: 1px solid #e2e8f0;
-            background: linear-gradient(135deg, #0f4c81 0%, #2563eb 100%);
-            color: #fff;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .view-card-header-gradient h1,
-        .view-card-header-gradient h2,
-        .view-card-header-gradient small {
-            color: #fff;
-        }
-
-        .view-label {
-            font-weight: 700;
-            color: #334155;
-        }
-
-        .view-input,
-        .view-select {
-            border-radius: 0.75rem;
-            border: 1px solid #cbd5e1;
-            padding: 0.7rem 0.85rem;
-            background: #fff;
-        }
-
-        .view-input:focus,
-        .view-select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
-        }
-
-        .btn-view-primary {
-            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-            border: none;
-            border-radius: 0.8rem;
-            font-weight: 700;
-            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
-        }
-
-        .btn-view-primary:hover {
-            background: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
-        }
-
-        .auth-card {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        @media (max-width: 991.98px) {
-            .app-navbar .navbar-nav {
-                margin-top: 0.75rem;
-                gap: 0.35rem;
-            }
-
-            .app-navbar .nav-link {
-                display: inline-block;
-            }
-        }
-    </style>
-    @stack('styles')
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark app-navbar mb-4">
-        <div class="container main-container">
+<body class="bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-info-subtle border-bottom sticky-top">
+        <div class="container py-2">
+            <a class="navbar-brand d-flex align-items-center gap-3 fw-bold text-info-emphasis" href="{{ route('leave-requests.index') }}">
+                <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="56" height="56" class="rounded-circle border border-2 border-white shadow-sm">
+                <span>
+                    Ressource'Brie RH
+                    <span class="d-block fs-6 fw-normal text-success-emphasis">Gestion simple des congés</span>
+                </span>
+            </a>
 
-            <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
-                <div class="navbar-nav align-items-lg-center gap-lg-2">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Basculer la navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-2">
                     @auth
-                        <a class="nav-link {{ request()->routeIs('leave-requests.index') ? 'active' : '' }}" href="{{ route('leave-requests.index') }}">
-                            Synthèse
-                        </a>
+                        <a class="nav-link {{ request()->routeIs('leave-requests.index') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('leave-requests.index') }}">Tableau de bord</a>
 
                         @if (auth()->user()->hasStatus(\App\Models\User::STATUS_ADMIN, \App\Models\User::STATUS_EMPLOYEE))
-                            <a class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active' : '' }}" href="{{ route('leave-requests.create') }}">
-                                Nouvelle demande
-                            </a>
+                            <a class="nav-link {{ request()->routeIs('leave-requests.create') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('leave-requests.create') }}">Nouvelle demande</a>
                         @endif
 
-                        <span class="status-pill">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
+                        <span class="badge rounded-pill text-bg-success text-uppercase">{{ str_replace('_', ' ', auth()->user()->status) }}</span>
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="nav-link border-0 bg-transparent" type="submit">Déconnexion</button>
+                            <button class="btn btn-outline-info" type="submit">Déconnexion</button>
                         </form>
                     @else
-                        <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">Connexion</a>
-                        <a class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}" href="{{ route('register') }}">Inscription</a>
+                        <a class="nav-link {{ request()->routeIs('login') ? 'active fw-semibold text-success-emphasis' : '' }}" href="{{ route('login') }}">Connexion</a>
+                        <a class="btn btn-success" href="{{ route('register') }}">Inscription</a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container main-container page-shell">
-        <div class="page-header-card">
-            <h1>Gestion des ressources humaines</h1>
-            <p>Suivi des demandes, validation des congés et préparation des éléments utiles à la paie.</p>
-        </div>
-
-        @if (session('status'))
-            <div class="alert alert-success mb-4">
-                {{ session('status') }}
+    <main class="py-4">
+        <div class="container">
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 col-xl-10">
+                    <div class="card border-0 shadow-sm bg-white">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="row align-items-center g-4">
+                                <div class="col-md-auto text-center">
+                                    <img src="{{ asset('logo-ressource-brie.svg') }}" alt="Logo Ressource'Brie" width="120" height="120" class="img-fluid rounded-circle shadow-sm">
+                                </div>
+                                <div class="col">
+                                    <span class="badge text-bg-info mb-3">Interface Bootstrap</span>
+                                    <h1 class="display-6 fw-bold text-info-emphasis mb-2">@yield('page_title', 'Une gestion des congés moderne et ergonomique')</h1>
+                                    <p class="lead text-secondary mb-0">@yield('page_intro', "Une interface claire, rapide à prendre en main et pensée pour les équipes de la Ressource'Brie.")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        @endif
 
-        @if ($errors->any())
-            <div class="alert alert-danger mb-4">
-                <div class="fw-bold mb-2">Des éléments nécessitent une correction :</div>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-10">
+                    @if (session('success'))
+                        <div class="alert alert-success shadow-sm" role="alert">{{ session('success') }}</div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger shadow-sm" role="alert">
+                            <div class="fw-semibold mb-2">Merci de corriger les éléments suivants :</div>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @yield('content')
+                </div>
             </div>
-        @endif
-
-        <div class="content-wrapper">
-            @yield('content')
         </div>
+    </main>
 
-        <div class="footer-note">
-            Interface RH — suivi interne des demandes
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqk8aEAC5vlaQt1zG72Xd1LSeX776BF3nf6/Dr7fP5AnbcW2CYwiVdc+GqORdzdrD" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     @stack('scripts')
 </body>
 </html>
