@@ -28,12 +28,17 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $userModel = new User();
-        $user = $userModel->newQuery()
-            ->where($userModel->loginIdentifierColumn(), $credentials['pseudo'])
-            ->first();
+        $credentials['pseudo'] = trim($credentials['pseudo']);
 
-        if (! $user || ! Hash::check($credentials['password'], $user->getAuthPassword())) {
+        $userModel = new User();
+        $matchingUsers = $userModel->newQuery()
+            ->where($userModel->loginIdentifierColumn(), $credentials['pseudo'])
+            ->get();
+
+        /** @var User|null $user */
+        $user = $matchingUsers->first(fn (User $candidate): bool => Hash::check($credentials['password'], $candidate->getAuthPassword()));
+
+        if (! $user) {
             throw ValidationException::withMessages([
                 'pseudo' => 'Les informations fournies sont invalides.',
             ]);
