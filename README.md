@@ -80,6 +80,11 @@ CREATE TABLE payroll_manager (
 2. Accédez ensuite à `http://localhost:8000` pour déposer des demandes de congés ou valider/rejeter celles en attente.
 
 
+## Debug de connexion
+- Pour tracer la connexion sans journaliser le mot de passe en clair, activez `AUTH_DEBUG=true` dans `.env`.
+- Les logs Laravel indiqueront alors la connexion réellement utilisée, la colonne de recherche, le nombre d'utilisateurs trouvés, l'identifiant utilisateur, la longueur du hash stocké et l'algorithme détecté.
+- Pensez à remettre `AUTH_DEBUG=false` après diagnostic.
+
 ## Règles d'authentification
 - La connexion lit les utilisateurs dans `objets.users` via la colonne `pseudo`; si la base d’authentification dédiée n’est pas configurée, l’application retombe automatiquement sur la colonne `email` de la table locale `users`.
 - Le rôle `admin` est attribué quand `objets.users.admin = 2`.
