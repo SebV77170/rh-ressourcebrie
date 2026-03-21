@@ -39,16 +39,16 @@ npm install
 ```
 
 ## Créer les tables avec les migrations
-Une fois `.env` configuré, exécutez les migrations Laravel pour créer automatiquement la table des demandes de congés (`leave_requests`) dans la base `rh` :
+Une fois `.env` configuré, exécutez les migrations Laravel pour créer automatiquement les tables `leave_requests` et `payroll_manager` dans la base `rh` :
 ```bash
 php artisan migrate
 ```
 
-La table générée contiendra notamment les colonnes suivantes :
-- `employee_name`, `employee_email`, `start_date`, `end_date`, `reason` pour la demande
-- `status`, `decision_notes`, `decision_made_at` pour le suivi des décisions du CA
+La migration génère notamment :
+- la table `leave_requests` avec `employee_name`, `employee_email`, `start_date`, `end_date`, `reason`, `status`, `decision_notes` et `decision_made_at`
+- la table `payroll_manager` avec un `uuid_user` unique pointant vers l'utilisateur mutualisé autorisé à accéder au récapitulatif paie
 
-Si vous ne pouvez pas lancer les migrations, vous pouvez créer la table manuellement avec l'extrait SQL équivalent (à adapter si besoin) :
+Si vous ne pouvez pas lancer les migrations, vous pouvez créer les tables manuellement avec les extraits SQL équivalents (à adapter si besoin) :
 ```sql
 CREATE TABLE leave_requests (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -60,6 +60,13 @@ CREATE TABLE leave_requests (
     status VARCHAR(255) NOT NULL DEFAULT 'pending',
     decision_notes TEXT NULL,
     decision_made_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE payroll_manager (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid_user BIGINT UNSIGNED NOT NULL UNIQUE,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
