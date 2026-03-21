@@ -38,7 +38,6 @@
                         </form>
                     @else
                         <a class="nav-link px-3 {{ request()->routeIs('login') ? 'active fw-semibold text-info-emphasis' : 'text-secondary' }}" href="{{ route('login') }}">Connexion</a>
-                        <a class="btn btn-success" href="{{ route('register') }}">Inscription</a>
                     @endauth
                 </div>
             </div>

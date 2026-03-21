@@ -34,7 +34,6 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
-                            <a href="{{ route('register') }}" class="btn btn-outline-secondary">Créer un compte</a>
                             <button type="submit" class="btn btn-info text-white">Se connecter</button>
                         </div>
                     </form>

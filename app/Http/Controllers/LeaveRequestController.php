@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeDirectory;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class LeaveRequestController extends Controller
@@ -64,10 +67,7 @@ class LeaveRequestController extends Controller
         return view('leave_requests.create', [
             'currentUser' => $user,
             'employees' => $user->hasStatus(User::STATUS_ADMIN)
-                ? User::query()
-                    ->where('status', User::STATUS_EMPLOYEE)
-                    ->orderBy('name')
-                    ->get(['id', 'name', 'email'])
+                ? $this->employeesForAdmin()
                 : collect(),
         ]);
     }
@@ -113,5 +113,27 @@ class LeaveRequestController extends Controller
         return redirect()
             ->route('leave-requests.index')
             ->with('status', 'La demande a été refusée.');
+    }
+
+    protected function employeesForAdmin(): Collection
+    {
+        $authConnection = config('database.auth_connection');
+
+        if ($authConnection !== config('database.default')
+            && Schema::connection($authConnection)->hasTable('employes')
+            && Schema::connection($authConnection)->hasTable('users')) {
+            return EmployeeDirectory::activeDirectoryQuery()
+                ->get()
+                ->map(fn (EmployeeDirectory $employee) => (object) [
+                    'id' => $employee->uuid_user,
+                    'name' => trim($employee->prenom.' '.$employee->nom),
+                    'email' => $employee->mail,
+                ]);
+        }
+
+        return User::query()
+            ->where('status', User::STATUS_EMPLOYEE)
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
     }
 }
