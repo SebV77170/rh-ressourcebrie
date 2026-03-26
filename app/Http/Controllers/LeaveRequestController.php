@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\View\View;
 
 class LeaveRequestController extends Controller
@@ -113,6 +114,32 @@ class LeaveRequestController extends Controller
         return redirect()
             ->route('leave-requests.index')
             ->with('status', 'La demande a été refusée.');
+    }
+
+    public function cancel(LeaveRequest $leaveRequest): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->hasStatus(User::STATUS_EMPLOYEE)) {
+            throw new HttpException(403);
+        }
+
+        if ($leaveRequest->employee_email !== $user->email) {
+            throw new HttpException(403);
+        }
+
+        if ($leaveRequest->status !== 'pending') {
+            return redirect()
+                ->route('leave-requests.index')
+                ->with('status', 'Seules les demandes en attente peuvent être annulées.');
+        }
+
+        $leaveRequest->delete();
+
+        return redirect()
+            ->route('leave-requests.index')
+            ->with('status', 'Votre demande de congé a bien été annulée.');
     }
 
     protected function employeesForAdmin(): Collection

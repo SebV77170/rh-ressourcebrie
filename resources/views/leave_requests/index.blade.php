@@ -31,7 +31,7 @@
                                     <th>Période</th>
                                     <th>Motif</th>
                                     <th>Statut</th>
-                                    <th class="text-end">Actions CA</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,6 +83,12 @@
                                                         <button type="submit" class="btn btn-outline-danger btn-sm">Refuser</button>
                                                     </form>
                                                 </div>
+                                            @elseif (auth()->user()->hasStatus(\App\Models\User::STATUS_EMPLOYEE) && $leaveRequest->status === 'pending')
+                                                <form method="POST" action="{{ route('leave-requests.cancel', $leaveRequest) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Annuler ma demande</button>
+                                                </form>
                                             @else
                                                 <span class="text-secondary small">
                                                     @if ($canManageRequests)

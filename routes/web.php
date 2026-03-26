@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('status:'.User::STATUS_ADMIN)
         ->name('leave-requests.reject');
 
+    Route::delete('/conges/{leaveRequest}/annuler', [LeaveRequestController::class, 'cancel'])
+        ->middleware('status:'.User::STATUS_EMPLOYEE)
+        ->name('leave-requests.cancel');
+
     Route::get('/gestionnaires-paie', [PayrollManagerController::class, 'index'])
         ->middleware('status:'.User::STATUS_ADMIN)
         ->name('payroll-managers.index');

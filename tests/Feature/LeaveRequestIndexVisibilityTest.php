@@ -44,7 +44,7 @@ class LeaveRequestIndexVisibilityTest extends TestCase
         $response->assertSee('jean@example.com');
         $response->assertDontSee('Alice Martin');
         $response->assertDontSee('alice@example.com');
-        $response->assertSee('Consultation uniquement');
+        $response->assertSee('Annuler ma demande');
     }
 
     public function test_admin_still_sees_all_leave_requests_on_dashboard(): void
