@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('status:'.User::STATUS_ADMIN)
         ->name('leave-requests.reject');
 
+    Route::patch('/conges/{leaveRequest}/motif-refus', [LeaveRequestController::class, 'updateRejectionMessage'])
+        ->middleware('status:'.User::STATUS_ADMIN)
+        ->name('leave-requests.update-rejection-message');
+
     Route::delete('/conges/{leaveRequest}/annuler', [LeaveRequestController::class, 'cancel'])
         ->middleware('status:'.User::STATUS_EMPLOYEE)
         ->name('leave-requests.cancel');

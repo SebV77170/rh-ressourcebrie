@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LeaveRequest extends Model
 {
@@ -25,4 +26,9 @@ class LeaveRequest extends Model
         'end_date' => 'date',
         'decision_made_at' => 'datetime',
     ];
+
+    public function rejectionMessage(): HasOne
+    {
+        return $this->hasOne(LeaveRequestRejectionMessage::class);
+    }
 }

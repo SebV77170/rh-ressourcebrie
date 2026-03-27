@@ -60,10 +60,13 @@
                                                     'rejected' => 'Refusée',
                                                 ][$leaveRequest->status] ?? ucfirst($leaveRequest->status);
                                             @endphp
+                                            @php
+                                                $rejectionMessage = $leaveRequest->rejectionMessage?->message ?? $leaveRequest->decision_notes;
+                                            @endphp
                                             <span class="badge rounded-pill text-bg-{{ $statusClass }}">{{ $statusLabel }}</span>
 
-                                            @if ($leaveRequest->decision_notes)
-                                                <div class="text-secondary small mt-2">{{ $leaveRequest->decision_notes }}</div>
+                                            @if ($rejectionMessage)
+                                                <div class="text-secondary small mt-2">{{ $rejectionMessage }}</div>
                                             @endif
                                         </td>
                                         <td class="text-end">
@@ -76,10 +79,10 @@
                                                         <button type="submit" class="btn btn-success btn-sm">Valider</button>
                                                     </form>
 
-                                                    <form method="POST" action="{{ route('leave-requests.reject', $leaveRequest) }}">
+                                                    <form method="POST" action="{{ route('leave-requests.reject', $leaveRequest) }}" class="d-flex gap-2 align-items-start">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <input type="hidden" name="decision_notes" value="Refusé par le CA">
+                                                        <textarea name="decision_notes" rows="2" class="form-control form-control-sm" placeholder="Motif du refus" required></textarea>
                                                         <button type="submit" class="btn btn-outline-danger btn-sm">Refuser</button>
                                                     </form>
                                                 </div>
@@ -90,6 +93,14 @@
                                                     <button type="submit" class="btn btn-outline-danger btn-sm">Annuler ma demande</button>
                                                 </form>
                                             @else
+                                                @if ($canManageRequests && $leaveRequest->status === 'rejected')
+                                                    <form method="POST" action="{{ route('leave-requests.update-rejection-message', $leaveRequest) }}" class="d-grid gap-2 mb-2">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <textarea name="decision_notes" rows="2" class="form-control form-control-sm" required>{{ old('decision_notes', $rejectionMessage) }}</textarea>
+                                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Mettre à jour le motif</button>
+                                                    </form>
+                                                @endif
                                                 <span class="text-secondary small">
                                                     @if ($canManageRequests)
                                                         Décision le {{ optional($leaveRequest->decision_made_at)->format('d/m/Y H:i') ?? '—' }}

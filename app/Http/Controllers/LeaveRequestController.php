@@ -27,6 +27,7 @@ class LeaveRequestController extends Controller
         $reportPeriodEnd = $reportPeriodStart->copy()->endOfMonth();
 
         $leaveRequestsQuery = LeaveRequest::query()
+            ->with('rejectionMessage')
             ->when(
                 $user->hasStatus(User::STATUS_EMPLOYEE),
                 fn (Builder $query): Builder => $query->where('employee_email', $user->email)
@@ -105,15 +106,45 @@ class LeaveRequestController extends Controller
 
     public function reject(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
+        $validated = $request->validate([
+            'decision_notes' => ['required', 'string', 'max:2000'],
+        ]);
+
         $leaveRequest->update([
             'status' => 'rejected',
-            'decision_notes' => $request->input('decision_notes'),
+            'decision_notes' => $validated['decision_notes'],
             'decision_made_at' => Carbon::now(),
         ]);
+
+        $this->storeOrUpdateRejectionMessage($leaveRequest, $validated['decision_notes']);
 
         return redirect()
             ->route('leave-requests.index')
             ->with('status', 'La demande a été refusée.');
+    }
+
+    public function updateRejectionMessage(Request $request, LeaveRequest $leaveRequest): RedirectResponse
+    {
+        if ($leaveRequest->status !== 'rejected') {
+            return redirect()
+                ->route('leave-requests.index')
+                ->with('status', 'Le motif de refus ne peut être modifié que pour une demande refusée.');
+        }
+
+        $validated = $request->validate([
+            'decision_notes' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $leaveRequest->update([
+            'decision_notes' => $validated['decision_notes'],
+            'decision_made_at' => Carbon::now(),
+        ]);
+
+        $this->storeOrUpdateRejectionMessage($leaveRequest, $validated['decision_notes']);
+
+        return redirect()
+            ->route('leave-requests.index')
+            ->with('status', 'Le motif de refus a été mis à jour.');
     }
 
     public function cancel(LeaveRequest $leaveRequest): RedirectResponse
@@ -162,5 +193,19 @@ class LeaveRequestController extends Controller
             ->where('status', User::STATUS_EMPLOYEE)
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
+    }
+
+    protected function storeOrUpdateRejectionMessage(LeaveRequest $leaveRequest, string $message): void
+    {
+        /** @var User $admin */
+        $admin = Auth::user();
+
+        $leaveRequest->rejectionMessage()->updateOrCreate(
+            ['leave_request_id' => $leaveRequest->id],
+            [
+                'message' => $message,
+                'updated_by_admin_id' => $admin->id,
+            ]
+        );
     }
 }
