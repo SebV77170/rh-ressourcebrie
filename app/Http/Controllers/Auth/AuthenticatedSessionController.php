@@ -33,8 +33,9 @@ class AuthenticatedSessionController extends Controller
 
         $userModel = new User();
         $loginColumn = $userModel->loginIdentifierColumn();
+        $loginValue = $userModel->loginIdentifierValue($credentials['pseudo']);
         $matchingUsers = $userModel->newQuery()
-            ->where($loginColumn, $credentials['pseudo'])
+            ->where($loginColumn, $loginValue)
             ->get();
 
         $this->logAuthenticationDebug(
@@ -42,6 +43,7 @@ class AuthenticatedSessionController extends Controller
             $matchingUsers,
             [
                 'login_column' => $loginColumn,
+                'login_value' => $loginValue,
                 'matching_users_count' => $matchingUsers->count(),
                 'pseudo' => $credentials['pseudo'],
                 'resolved_auth_connection' => $userModel->getConnectionName(),
@@ -70,6 +72,7 @@ class AuthenticatedSessionController extends Controller
                 $matchingUsers,
                 [
                     'login_column' => $loginColumn,
+                    'login_value' => $loginValue,
                     'pseudo' => $credentials['pseudo'],
                     'resolved_auth_connection' => $userModel->getConnectionName(),
                 ]
@@ -85,6 +88,7 @@ class AuthenticatedSessionController extends Controller
             collect([$user]),
             [
                 'login_column' => $loginColumn,
+                'login_value' => $loginValue,
                 'pseudo' => $credentials['pseudo'],
                 'resolved_auth_connection' => $user->getConnectionName(),
             ]

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -69,7 +70,22 @@ class User extends Authenticatable
 
     public function loginIdentifierColumn(): string
     {
+        if ($this->hasLegacyAuthPseudoNormalizedColumn()) {
+            return 'pseudo_normalise';
+        }
+
         return $this->hasLegacyAuthPseudoColumn() ? 'pseudo' : 'email';
+    }
+
+    public function loginIdentifierValue(string $identifier): string
+    {
+        $trimmedIdentifier = trim($identifier);
+
+        if ($this->loginIdentifierColumn() === 'pseudo_normalise') {
+            return $this->normalizePseudo($trimmedIdentifier);
+        }
+
+        return $trimmedIdentifier;
     }
 
     protected function casts(): array
@@ -162,6 +178,19 @@ class User extends Authenticatable
     {
         return $this->hasLegacyAuthSchema()
             && Schema::connection($this->getConnectionName())->hasColumn('users', 'pseudo');
+    }
+
+    protected function hasLegacyAuthPseudoNormalizedColumn(): bool
+    {
+        return $this->hasLegacyAuthSchema()
+            && Schema::connection($this->getConnectionName())->hasColumn('users', 'pseudo_normalise');
+    }
+
+    protected function normalizePseudo(string $pseudo): string
+    {
+        return (string) Str::of(Str::ascii($pseudo))
+            ->lower()
+            ->replaceMatches('/\s+/', '');
     }
 
     protected function hasTable(?string $database, string $table, ?string $connection = null): bool
